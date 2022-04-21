@@ -6,13 +6,9 @@ import dateFormat from 'dateformat';
 
 export default function Callingapi() {
   const [apidata, setApiData] = useState([]);
-  const [apiteamList, setTeamList] = useState([]);
-
-  const [filter, setFilter] = useState('');
-
-  const serachText = (event) => {
-    setFilter(event.target.value);
-  };
+  // const [apiteamList, setTeamList] = useState([]);
+  const [searchInput, setSearchInput] = useState('');
+  const [filteredResults, setFilteredResults] = useState([]);
 
   useEffect(() => {
     axios
@@ -24,79 +20,145 @@ export default function Callingapi() {
         console.log(sortTeam.Value);
 
         setApiData(sortTeam);
-        setTeamList(res.data.teamsList);
+        // setTeamList(res.data.teamsList);
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
 
-  let dataSearch = apidata.filter((item) => {
-    return Object.keys(item).some((key) =>
-      item[key]
-        .toString()
-        .toLowerCase()
-        .includes(filter.toString().toLowerCase())
-    );
-  });
+  const searchItems = (searchValue) => {
+    setSearchInput(searchValue)
+    if (searchInput !== '') {
+      const filteredData = apidata.filter((item) => {
+        return Object.values(item).join('').toLowerCase().includes(searchInput.toLowerCase())
+      })
+      setFilteredResults(filteredData)
+    } else {
+      setFilteredResults(apidata)
+    }
+  }
 
   var imgPath = '/images/';
   var imgExt = '.jpg';
   return (
-    <div className="container">
-      <h3 className="pb-3 mb-4 font-italic border-bottom">Card Styles</h3>
-      <div className="row">
-        <h2>Search</h2>
-        <input
+    <div>
+      <h2 style={{ textAlign: 'cdnter' }}>Product Card</h2>
+      <h2>Search</h2>
+      <input
           type="text"
-          value={filter}
-          onChange={serachText.bind(this)}
+          onChange = {
+            (e) => searchItems(e.target.value)
+          }
           className="form-control mx-auto col-md-6 mb-3"
         />
-        {dataSearch.map((playerName, index) => (
-          <div className="col-md-6 " key={index}>
-            <div className="card flex-md-row mb-4 shadow-sm h-md-250">
-              <div className="card-body d-flex flex-column align-items-start">
-                <strong className="d-inline-block mb-2 text-primary">
-                  Player Name: {playerName.PFName}
-                </strong>
-                <div className="mb-0 text-dark small">
-                  <strong className="d-inline-block mb-2 text-primary">
-                    Upcomig Matches:
-                  </strong>
-                  {playerName.UpComingMatchesList.map((upcoming) => (
-                    <span className="mb-0 mr-2 text-dark small">
-                      <b>
-                        {upcoming.CCode} <b>VS</b> {upcoming.VsCCode}
-                      </b>
-                      <strong className="d-inline-block mb-2 text-primary">
-                        Match Time :
-                        {dateFormat(
-                          upcoming.MDate,
-                          'GMT:dd-mm-yyyy h:mm:ss TT'
-                        )}
-                      </strong>
-                    </span>
-                  ))}
+      <div className="row">
+        {searchInput.length > 1 ? (
+              filteredResults.map((item, index) => {
+                return (
+                  <div className="col-md-3" key={index}>
+                  <div className="container">
+                    <div
+                      className="card"
+                      style={{
+                        boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
+                        maxWidth: '300px',
+                        margin: 'auto',
+                        height: '600px',
+                        alignItems: 'center',
+                        marginTop: '8px',
+                      }}
+                    >
+                      <img
+                        className="card-img-top rounded-circle"
+                        src={imgPath + item.Id + imgExt}
+                        alt="Denim Jeans"
+                        style={{ width: '100%', height: '300px' }}
+                      />
+                      <div className="card-body">
+                        <h1 className="card-title">{item.PFName}</h1>
+                        <h4 className="card-title">
+                          Description : {item.SkillDesc}
+                        </h4>
+                        {item.UpComingMatchesList.map((upcoming) => (
+                          <span>
+                            <p className="card-text">
+                              Upcomig Matches:&nbsp;{upcoming.CCode} <b>VS</b>{' '}
+                              {upcoming.VsCCode}
+                              <br></br>
+                              Match Time:&nbsp;
+                              {dateFormat(
+                                upcoming.MDate,
+                                'GMT:dd-mm-yyyy h:mm:ss TT'
+                              )}
+                            </p>
+                          </span>
+                        ))}
+                        <br></br>
+                        <button className="btn btn-outline-dark btn-md">
+                          <span>$</span>
+                          {item.Value}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <strong className="card-text mb-auto">
-                  Description : {playerName.SkillDesc}
-                </strong>
-                <button className="btn btn-outline-primary btn-sm">
-                  Value: <span>$</span>
-                  {playerName.Value}
-                </button>
-              </div>
-
-              <img
-                className="card-img-right flex-auto d-none d-lg-block"
-                alt="Thumbnail [200x250]"
-                src={imgPath + playerName.Id + imgExt}
-                style={{ width: '200px', height: '200px' }}
-              />
-            </div>
-          </div>
-        ))}
+                 )
+              })
+            ) : (
+              apidata.map((playerName, index) => {
+                    return (
+                <div className="col-md-3" key={index}>
+                  <div className="container">
+                    <div
+                      className="card"
+                      style={{
+                        boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
+                        maxWidth: '300px',
+                        margin: 'auto',
+                        height: '600px',
+                        alignItems: 'center',
+                        marginTop: '8px',
+                      }}
+                    >
+                      <img
+                        className="card-img-top rounded-circle"
+                        src={imgPath + playerName.Id + imgExt}
+                        alt="Denim Jeans"
+                        style={{ width: '100%', height: '300px' }}
+                      />
+                      <div className="card-body">
+                        <h1 className="card-title">{playerName.PFName}</h1>
+                        <h4 className="card-title">
+                          Description : {playerName.SkillDesc}
+                        </h4>
+                        {playerName.UpComingMatchesList.map((upcoming) => (
+                          <span>
+                            {' '}
+                            <p className="card-text">
+                              Upcomig Matches:&nbsp;{upcoming.CCode} <b>VS</b>{' '}
+                              {upcoming.VsCCode}
+                              <br></br>
+                              Match Time:&nbsp;
+                              {dateFormat(
+                                upcoming.MDate,
+                                'GMT:dd-mm-yyyy h:mm:ss TT'
+                              )}
+                            </p>
+                          </span>
+                        ))}
+                        <br></br>
+                        <button className="btn btn-outline-dark btn-md">
+                          {' '}
+                          <span>$</span>
+                          {playerName.Value}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )})
+            )}
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import './App.css';
 import Student from './components/Student';
 import Callingapi from './components/Callingapi';
 import Player from './components/Player';
+import Test from './components/Test';
 
 function App() {
   return (
@@ -10,7 +11,9 @@ function App() {
       <div className="App">
         {/* <Student /> */}
         {/* <Callingapi /> */}
-        <Player />
+        {/* <Player /> */}
+
+        <Test/>
       </div>
     </>
   );
