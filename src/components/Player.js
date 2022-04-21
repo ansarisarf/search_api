@@ -31,81 +31,47 @@ export default function Player() {
       });
   }, []);
 
-  let dataSearch = apidata.filter((item) => {
-    return Object.keys(item).some((key) =>
-      item[key]
-        .toString()
-        .toLowerCase()
-        .includes(filter.toString().toLowerCase())
-    );
-  });
+  
 
   var imgPath = '/images/';
   var imgExt = '.jpg';
 
   return (
     <div>
-      <h2 style={{ textAlign: 'cdnter' }}>Product Card</h2>
-      <h2>Search</h2>
-      <input
-        type="text"
-        value={filter}
-        onChange={serachText.bind(this)}
-        className="form-control mx-auto col-md-6 mb-3"
-      />
-      <div className="row">
-        {dataSearch.map((playerName, index) => (
-          <div className="col-md-3" key={index}>
-            <div className="container">
-              <div
-                className="card"
-                style={{
-                  boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
-                  maxWidth: '300px',
-                  margin: 'auto',
-                  height: '600px',
-                  alignItems: 'center',
-                  marginTop: '8px',
-                }}
-              >
-                <img
-                  className="card-img-top rounded-circle"
-                  src={imgPath + playerName.Id + imgExt}
-                  alt="Denim Jeans"
-                  style={{ width: '100%', height: '300px' }}
-                />
-                <div className="card-body">
-                  <h1 className="card-title">{playerName.PFName}</h1>
-                  <h4 className="card-title">
-                    Description : {playerName.SkillDesc}
-                  </h4>
-                  {playerName.UpComingMatchesList.map((upcoming) => (
-                    <span>
-                      {' '}
-                      <p className="card-text">
-                        Upcomig Matches:&nbsp;{upcoming.CCode} <b>VS</b>{' '}
-                        {upcoming.VsCCode}
-                        <br></br>
-                        Match Time:&nbsp;
-                        {dateFormat(
-                          upcoming.MDate,
-                          'GMT:dd-mm-yyyy h:mm:ss TT'
-                        )}
-                      </p>
-                    </span>
-                  ))}
-                  <br></br>
-                  <button className="btn btn-outline-dark btn-md">
-                    {' '}
-                    <span>$</span>
-                    {playerName.Value}
-                  </button>
-                </div>
+      <h3>Player List</h3>
+      {apidata.map((item, index) => {
+        return(
+          <ul className="ul-cards row" key={index}>
+            <li className='accentLi1 col-md-4'>
+              <div className="icon">
+                <img className="card-img-top rounded-circle"
+                        src={imgPath + item.Id + imgExt}
+                        alt="Denim Jeans"
+                      /></div>
+              <div className="title">{item.PFName}</div>
+              <div className="content"><b>Value: </b><span className='text-danger'>$</span>{item.Value}<br/><b>Description: </b>{item.SkillDesc}<br/>
+              {item.UpComingMatchesList.map((upcoming) => (
+                (upcoming.CCode === '') ?
+                          <span></span>
+                          :<div>
+                             <b>Upcomig Matches:</b> <span className='badge badge-primary'>{upcoming.CCode}</span> <b>Vs </b>
+                              <span className='badge badge-secondary'>{upcoming.VsCCode}</span> 
+                              <br></br>
+                              <b>Match Time: </b>
+                              <span className = 'badge badge-info' > {
+                                  dateFormat(
+                                upcoming.MDate,
+                                'GMT:dd-mm-yyyy h:mm:ss TT'
+                              )}</span>
+                          </div>
+                        ))}
+                {/* <p>Value: {item.PFName}</p> */}
               </div>
-            </div>
-          </div>
-        ))}
-      </div>
+            </li>
+          </ul>
+        )     
+      })}
+      
     </div>
   );
 }
