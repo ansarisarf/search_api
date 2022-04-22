@@ -6,7 +6,6 @@ import dateFormat from 'dateformat';
 
 export default function Callingapi() {
   const [apidata, setApiData] = useState([]);
-  // const [apiteamList, setTeamList] = useState([]);
   const [searchInput, setSearchInput] = useState('');
   const [filteredResults, setFilteredResults] = useState([]);
 
@@ -18,7 +17,6 @@ export default function Callingapi() {
         var sortTeam = res.data.playerList;
         sortTeam.sort((a, b) => (a.Value > b.Value ? 1 : -1));
         console.log(sortTeam.Value);
-
         setApiData(sortTeam);
         // setTeamList(res.data.teamsList);
       })
@@ -28,43 +26,46 @@ export default function Callingapi() {
   }, []);
 
   const searchItems = (searchValue) => {
-    setSearchInput(searchValue)
+    setSearchInput(searchValue);
     if (searchInput !== '') {
       const filteredData = apidata.filter((item) => {
-        return Object.values(item).join('').toLowerCase().includes(searchInput.toLowerCase())
-      })
-      setFilteredResults(filteredData)
+        return Object.values(item)
+          .join('')
+          .toLowerCase()
+          .includes(searchInput.toLowerCase());
+      });
+      setFilteredResults(filteredData);
     } else {
-      setFilteredResults(apidata)
+      setFilteredResults(apidata);
     }
-  }
+  };
 
-  var imgPath = '/images/';
-  var imgExt = '.jpg';
+  let imgPath = '/images/';
+  let imgExt = '.jpg';
   return (
     <div>
-      <h2 style={{ textAlign: 'cdnter' }}>Product Card</h2>
-      <h2>Search</h2>
+      <h2 style={{ textAlign: 'cdnter', marginTop: '20px' }}>
+        Football Player
+      </h2>
       <input
-          type="text"
-          onChange = {
-            (e) => searchItems(e.target.value)
-          }
-          className="form-control mx-auto col-md-6 mb-3"
-        />
-      <div className="row">
-        {searchInput.length > 1 ? (
-              filteredResults.map((item, index) => {
-                return (
-                  <div className="col-md-3" key={index}>
+        style={{ width: '400px' }}
+        type="text"
+        placeholder="Search...."
+        onChange={(e) => searchItems(e.target.value)}
+        className="form-control mx-auto col-md-6 mb-3"
+      />
+      <div className="row" style={{ backgroundColor: 'white' }}>
+        {searchInput.length > 1
+          ? filteredResults.map((item, index) => {
+              return (
+                <div className="col-md-3" key={index}>
                   <div className="container">
                     <div
                       className="card"
                       style={{
                         boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
-                        maxWidth: '300px',
                         margin: 'auto',
-                        height: '600px',
+                        height: '650px',
                         alignItems: 'center',
                         marginTop: '8px',
                       }}
@@ -72,8 +73,8 @@ export default function Callingapi() {
                       <img
                         className="card-img-top rounded-circle"
                         src={imgPath + item.Id + imgExt}
-                        alt="Denim Jeans"
-                        style={{ width: '100%', height: '300px' }}
+                        alt="Noimage"
+                        style={{ width: '100%', height: '280px' }}
                       />
                       <div className="card-body">
                         <h1 className="card-title">{item.PFName}</h1>
@@ -103,18 +104,16 @@ export default function Callingapi() {
                     </div>
                   </div>
                 </div>
-                 )
-              })
-            ) : (
-              apidata.map((playerName, index) => {
-                    return (
-                <div className="col-md-3" key={index}>
+              );
+            })
+          : apidata.map((playerName, index) => {
+              return (
+                <div className="col-md-3 col-sm-6" key={index}>
                   <div className="container">
                     <div
                       className="card"
                       style={{
                         boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
-                        maxWidth: '300px',
                         margin: 'auto',
                         height: '600px',
                         alignItems: 'center',
@@ -124,7 +123,7 @@ export default function Callingapi() {
                       <img
                         className="card-img-top rounded-circle"
                         src={imgPath + playerName.Id + imgExt}
-                        alt="Denim Jeans"
+                        alt="Noimage"
                         style={{ width: '100%', height: '300px' }}
                       />
                       <div className="card-body">
@@ -136,10 +135,10 @@ export default function Callingapi() {
                           <span>
                             {' '}
                             <p className="card-text">
-                              Upcomig Matches:&nbsp;{upcoming.CCode} <b>VS</b>{' '}
-                              {upcoming.VsCCode}
+                              <b>Upcomig Matches:</b>&nbsp;{upcoming.CCode}{' '}
+                              <b>VS</b> {upcoming.VsCCode}
                               <br></br>
-                              Match Time:&nbsp;
+                              <b>Match Time:</b>&nbsp;
                               {dateFormat(
                                 upcoming.MDate,
                                 'GMT:dd-mm-yyyy h:mm:ss TT'
@@ -157,8 +156,8 @@ export default function Callingapi() {
                     </div>
                   </div>
                 </div>
-              )})
-            )}
+              );
+            })}
       </div>
     </div>
   );
