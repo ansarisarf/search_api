@@ -21,8 +21,6 @@ export default function Player() {
         // console.log(res);
         var sortTeam = res.data.playerList;
         sortTeam.sort((a, b) => (a.Value > b.Value ? 1 : -1));
-        console.log(sortTeam.Value);
-
         setApiData(sortTeam);
         setTeamList(res.data.teamsList);
       })
@@ -40,9 +38,15 @@ export default function Player() {
       {apidata.map((item, index) => {
         return (
           <div className="grid-container col-md-3">
-            <div className="grid-item grid-item-{index}">
-              <ul className="ul-cards row " key={index}>
-                <li className="accentLi1">
+            <div className="grid-item grid-item">
+              <ul className = "ul-cards row"
+              key = {
+                index
+              }>
+                <li key = {index}
+                className = {
+                  (index === 0 ? 'accentLi1' : index === 1 ? 'accentLi2' : index === 2 ? 'accentLi3' : index === 3 ? 'accentLi4' : index === 4 ? 'accentLi5' : 'accentLi6')
+                } >
                   <div className="icon">
                     <img
                       className="card-img-top rounded-circle img"
@@ -61,13 +65,13 @@ export default function Player() {
                     <br />
                     {item.UpComingMatchesList.map((upcoming) =>
                       upcoming.CCode === '' ? (
-                        <span></span>
+                        <span> </span>
                       ) : (
                         <div>
-                          <b>Upcomig Matches:</b>{' '}
+                          <b>Upcomig Matches:</b>
                           <span className="badge badge-primary">
                             {upcoming.CCode}
-                          </span>{' '}
+                          </span>
                           <b>Vs </b>
                           <span className="badge badge-secondary">
                             {upcoming.VsCCode}
@@ -75,7 +79,6 @@ export default function Player() {
                           <br></br>
                           <b>Match Time: </b>
                           <span className="badge badge-info">
-                            {' '}
                             {dateFormat(
                               upcoming.MDate,
                               'GMT:dd-mm-yyyy h:mm:ss TT'
